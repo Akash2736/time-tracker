@@ -1,0 +1,38 @@
+pipeline {
+    agent { 
+        node { 
+            label 'master'
+            
+        } 
+    }
+        
+    environment {
+        RUN_CHECKOUT = 'true'
+        RUN_BUILD = 'true'
+        RUN_DEPLOYMENT = 'false'
+    }
+    
+    stages {
+        stage('Checking out code...') {
+            when { environment name: 'RUN_CHECKOUT', value:'true'}
+            steps {
+                git (
+                    url: 'https://github.com/Akash2736/time-tracker',
+                    credentialsId: '0d86d177-29e5-4b92-9b44-06fc5dda8599',
+                    branch: "master"
+                )
+                
+               sh "ls -lat"
+            }
+        }
+        
+        stage('Build') {
+            when { environment name: 'RUN_BUILD', value: 'true'}
+            steps {
+                echo 'Building..'
+                sh 'mvn clean package' 
+            }
+        }
+        
+    }
+}
